@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import styles from "./list.module.css";
+import { Box, Container, TextInput, Title } from "@mantine/core";
 
 interface ListItem {
   text: string;
@@ -32,6 +33,18 @@ export default function ListPage() {
   };
 
   const filteredList = filter === 'All' ? list : list.filter(item => item.category === filter);
+
+  return (
+    <Container>
+      <Box mt="xl">
+        <Title>Add your JD Links</Title>
+        <TextInput 
+        label=""
+        
+        />
+      </Box>
+    </Container>
+  )
 
   return (
     <div className={styles.container}>

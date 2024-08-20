@@ -1,4 +1,9 @@
-import "./globals.css";
+import '@mantine/core/styles.css';
+import { Container, createTheme, MantineProvider } from "@mantine/core";
+
+const theme = createTheme({
+  /** Put your mantine theme override here */
+});
 
 export default function RootLayout({
   children,
@@ -6,8 +11,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html>
+      <body>
+        <MantineProvider theme={theme}>
+          <Container size="sm">
+            {children}
+          </Container>
+        </MantineProvider>
+      </body>
     </html>
+
   );
 }
