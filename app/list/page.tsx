@@ -1,106 +1,100 @@
 "use client";
 
+import { Box, Container, Flex, Image, Stack, Text, TextInput, Title, UnstyledButton } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { IconPlus, IconTrash } from "@tabler/icons-react";
 import { useState } from "react";
-import styles from "./list.module.css";
-import { Box, Container, TextInput, Title } from "@mantine/core";
 
-interface ListItem {
-  text: string;
-  category: string;
+type linkItem = {
+  id: string;
+  image: string;
+  link: string;
 }
 
+
+const LinkInput = ({ addItem }: { addItem: (data: linkItem) => void }) => {
+  const [linkValue, setlinkValue] = useState<linkItem>({ id: "", image: "", link: "" })
+
+
+  return (
+    <Flex align="center" justify="space-between" gap="sm">
+      <TextInput
+        flex={1}
+        size="lg"
+        placeholder="add your JO link"
+        onChange={(v) =>
+          setlinkValue({ id: "", image: "", link: v.target.value })}
+        value={linkValue.link}
+      />
+      <UnstyledButton onClick={() => addItem(linkValue)}>
+        <IconPlus color="grey" />
+      </UnstyledButton>
+    </Flex>
+  );
+};
 export default function ListPage() {
-  const [list, setList] = useState<ListItem[]>([]);
-  const [inputValue, setInputValue] = useState<string>('');
-  const [newCategory, setNewCategory] = useState<string>('');
-  const [categories, setCategories] = useState<string[]>(['Work', 'Personal', 'Others']);
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [filter, setFilter] = useState<string>('All');
 
-  const addListItem = () => {
-    if (inputValue.trim() && selectedCategory !== 'All') {
-      setList([...list, { text: inputValue, category: selectedCategory }]);
-      setInputValue('');
-      setSelectedCategory('All');
+  const form = useForm<{ list?: linkItem[] }>({
+    mode: "uncontrolled", initialValues: {
+      list: undefined
+    },
+    onValuesChange: (values) => console.log("values", values)
+  })
+
+
+
+  const results = form.getValues().list || [];
+
+  const addLinkItem = (data: linkItem) => {
+    if (data) {
+      console.log("data", data)
+      form.setValues((prev) => ({
+        list: [...prev.list || [], data]
+      }))
     }
   };
 
-  const addCategory = () => {
-    if (newCategory.trim() && !categories.includes(newCategory)) {
-      setCategories([...categories, newCategory]);
-      setNewCategory('');
-    }
-  };
-
-  const filteredList = filter === 'All' ? list : list.filter(item => item.category === filter);
+  const deleteRequirementItem = () => { };
 
   return (
     <Container>
       <Box mt="xl">
-        <Title>Add your JD Links</Title>
-        <TextInput 
-        label=""
-        
-        />
+        <Title>Add your Job Opening Link</Title>
+        <Box>
+          <Text
+            variant={results?.length > 0 ? "gradient" : "text"}
+            style={{ fontWeight: "500" }}
+          >
+            Job Openings ({results?.length})
+          </Text>
+          <Text inline style={{ color: "gray" }} size="sm">
+            Click plus button to add requirement
+          </Text>
+        </Box>
+        <LinkInput addItem={addLinkItem} />
+        <Stack gap="md" pt="md">
+          {results?.map(({ id, image, link }) => (
+            <Flex key={id} align="center" justify="space-between" gap="sm">
+              <Flex gap="md">
+                <Image
+                  src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png"
+                  height={100}
+                  alt={link}
+                />
+                <Box>
+                  <Text>{id}</Text>
+                  <Text fw="bold">{link}</Text>
+                  <Text >description</Text>
+                </Box>
+              </Flex>
+              <UnstyledButton onClick={() => deleteRequirementItem()}>
+                <IconTrash color="grey" />
+              </UnstyledButton>
+            </Flex>
+          ))}
+        </Stack>
       </Box>
     </Container>
   )
-
-  return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>채용공고를 등록하세요</h1>
-      <h2>마감일자에 맞춰 알림을 보내드릴게요. 🍀</h2>
-      <div className={styles.inputContainer}>
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          className={styles.input}
-          placeholder="Enter an item"
-        />
-        <select
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-          className={styles.select}
-        >
-          <option value="All" disabled>Select category</option>
-          {categories.map((category, index) => (
-            <option key={index} value={category}>{category}</option>
-          ))}
-        </select>
-        <button onClick={addListItem} className={styles.addButton}>Add</button>
-      </div>
-      <div className={styles.categoryContainer}>
-        <input
-          type="text"
-          value={newCategory}
-          onChange={(e) => setNewCategory(e.target.value)}
-          className={styles.input}
-          placeholder="New category"
-        />
-        <button onClick={addCategory} className={styles.addButton}>카테고리 추가</button>
-      </div>
-      <div className={styles.filterContainer}>
-        <label htmlFor="filter" className={styles.filterLabel}>카테고리 필터</label>
-        <select
-          id="filter"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className={styles.select}
-        >
-          <option value="All">All</option>
-          {categories.map((category, index) => (
-            <option key={index} value={category}>{category}</option>
-          ))}
-        </select>
-      </div>
-      <ul className={styles.list}>
-        {filteredList.map((item, index) => (
-          <li key={index} className={styles.listItem}>
-            {item.text} <span className={styles.category}>[{item.category}]</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+  // );
 }
