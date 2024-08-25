@@ -1,7 +1,7 @@
+import { Box, Card, Flex, Image, Stack, Text, UnstyledButton } from "@mantine/core";
+import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { UrlItem } from "../../list/page";
 import styles from "./list.module.css";
-import { Box, Card, Flex, Image, Stack, Text, UnstyledButton } from "@mantine/core"
-import { IconEdit, IconTrash } from "@tabler/icons-react"
-import { UrlItem } from "../../list/page"
 
 type ListCardProp = {
     editLinkItem: (id: string) => void
@@ -31,11 +31,13 @@ export const ListCard = (
                         <Text c="gray" truncate="end">{url}</Text>
                     </Stack>
                     <Image
-                        h={120}
-                        radius="md"
+                        key="image"
+                        maw={180}
+                        height={120}
                         fallbackSrc="https://placehold.co/600x400?text=Placeholder"
-                        src={ogdata?.["og:site_name"]}
+                        src={ogdata?.["og:image"]}
                         alt={url}
+                        style={{ borderRadius: "10px" }}
                     />
                 </Flex>
                 <UnstyledButton onClick={() => editLinkItem(id)}>
