@@ -2,6 +2,7 @@ import { Box, Card, Flex, Image, Stack, Text, UnstyledButton } from "@mantine/co
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { UrlItem } from "../../list/page";
 import styles from "./list.module.css";
+import { dateFormatter } from "@/app/utils/dateFormatter";
 
 type ListCardProp = {
     editLinkItem: (id: string) => void
@@ -13,16 +14,17 @@ export const ListCard = (
         id,
         ogdata,
         url,
+        deadline,
         editLinkItem,
         deleteLinkItem
     }: ListCardProp) => {
     return (
         <Card shadow="sm" padding="md" radius="md" withBorder>
+            <Text c="gray">
+                {deadline && dateFormatter(deadline)}
+            </Text>
             <Flex className={styles.listCardWrapper} justify="space-between" gap="md">
                 <Flex gap="md" justify="space-between" flex={1} align="center">
-                    <Text>
-                        {ogdata?.["article:published_time"]}
-                    </Text>
                     <Stack h="100%" w={200} flex={1} justify="space-between">
                         <Box>
                             <Text fw="bold">{ogdata?.["og:title"]}</Text>

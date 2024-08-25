@@ -1,10 +1,13 @@
 "use client";
 
-import { Box, Container, Flex, Group, Image, Stack, Text, TextInput, Title, UnstyledButton } from "@mantine/core";
+import { Box, Container, Flex, Group, Stack, Text, TextInput, Title, UnstyledButton } from "@mantine/core";
+import { DatesProvider, DateTimePicker } from "@mantine/dates";
 import { useForm } from "@mantine/form";
-import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconCalendar, IconPlus } from "@tabler/icons-react";
 import { useState } from "react";
 import { ListCard } from "../_components/ListCard";
+import "@mantine/dates/styles.css";
+
 
 type OgMetaData = {
   'og:title'?: string;
@@ -19,24 +22,40 @@ type OgMetaData = {
 export interface UrlItem {
   id: string;
   url: string;
+  deadline?: Date;
   ogdata?: OgMetaData;
 }
 
-const LinkInput = ({ addItem }: { addItem: (urlValue: UrlItem["url"]) => void }) => {
+const LinkInput = ({ addItem }: { addItem: ({ deadline, urlValue }: { deadline?: UrlItem["deadline"], urlValue: UrlItem["url"] }) => void }) => {
   const [urlValue, setUrlValue] = useState<UrlItem["url"]>("")
+  const [deadline, setDeadline] = useState<Date>()
 
   return (
     <Flex align="center" justify="space-between" gap="md">
-      <TextInput
-        flex={1}
-        size="lg"
-        placeholder="add your JO link"
-        onChange={(v) =>
-          setUrlValue(v.target.value)
-        }
-        value={urlValue}
-      />
-      <UnstyledButton onClick={() => addItem(urlValue)}>
+      <Group w="100%" gap="sm">
+        <TextInput
+          maw={410}
+          w="100%"
+          size="md"
+          label="Url"
+          placeholder="add your JO link"
+          onChange={(v) =>
+            setUrlValue(v.target.value)
+          }
+          value={urlValue}
+        />
+        <DateTimePicker
+          size="md"
+          flex={1}
+          clearable
+          highlightToday
+          rightSection={<IconCalendar />}
+          label="Deadline"
+          value={deadline}
+          onChange={(v) => setDeadline(v as Date)}
+        />
+      </Group>
+      <UnstyledButton onClick={() => addItem({ urlValue, deadline })}>
         <IconPlus color="grey" />
       </UnstyledButton>
     </Flex>
@@ -53,18 +72,18 @@ export default function ListPage() {
 
   const results = form.getValues().list || [];
 
-  const addLinkItem = (url: string) => {
-    if (url) {
+  const addLinkItem = ({ deadline, urlValue }: { deadline?: UrlItem["deadline"], urlValue: UrlItem["url"] }) => {
+    if (urlValue) {
       const newId = crypto.randomUUID();
       const newData = {
-        url,
         id: newId,
+        url: urlValue,
+        deadline,
         ogdata: {
           "og:title": "Crawled Data Title",
           "og:description": "Apply Now!",
           "og:image": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png",
-          "article:published_time": `${new Date().getFullYear().toString().slice(2, 4)}.` + `${new Date().getMonth()}.` + `${new Date().getDay()}`
-        }
+        },
       }
 
       form.setValues((prev) => ({
@@ -81,7 +100,6 @@ export default function ListPage() {
 
   const editLinkItem = (targetId: string) => {
     console.log("editLinkItem", targetId)
-
   };
 
   return (
@@ -91,7 +109,7 @@ export default function ListPage() {
         <Stack>
           <Box>
             <Text
-            size="xl"
+              size="xl"
               fw={500}
               variant={results?.length > 0 ? "gradient" : "text"}
             >
@@ -104,11 +122,14 @@ export default function ListPage() {
           <LinkInput addItem={addLinkItem} />
         </Stack>
         <Stack gap="md" pt="md">
-          {results?.map(({ id, ogdata, url }) => {
+          {results?.map(({ id, deadline, ogdata, url }) => {
             return (
               <ListCard
                 key={id}
-                id={id} ogdata={ogdata} url={url}
+                id={id}
+                ogdata={ogdata}
+                url={url}
+                deadline={deadline}
                 editLinkItem={editLinkItem}
                 deleteLinkItem={deleteLinkItem}
               />
