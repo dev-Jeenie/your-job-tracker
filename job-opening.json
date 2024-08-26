@@ -1,0 +1,24 @@
+{
+  "list": [
+    {
+      "id": "ea801247-6485-429a-8bdc-4eb1a960b7fd",
+      "url": "qweqwewwfewdsd",
+      "deadline": "2024-08-19T15:00:00.000Z",
+      "ogdata": {
+        "og:title": "Crawled Data Title",
+        "og:description": "Apply Now!",
+        "og:image": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png"
+      }
+    },
+    {
+      "id": "82116322-e63e-49d4-aa72-d26a465349a8",
+      "url": "ㅂㅈㄷㅈㅂㄷ",
+      "deadline": "2024-08-07T15:00:00.000Z",
+      "ogdata": {
+        "og:title": "Crawled Data Title",
+        "og:description": "Apply Now!",
+        "og:image": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png"
+      }
+    }
+  ]
+}

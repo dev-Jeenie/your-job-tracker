@@ -1,12 +1,15 @@
 "use client";
 
 import { Box, Container, Flex, Group, Stack, Text, TextInput, Title, UnstyledButton } from "@mantine/core";
-import { DatesProvider, DateTimePicker } from "@mantine/dates";
+import { DateTimePicker } from "@mantine/dates";
+import "@mantine/dates/styles.css";
 import { useForm } from "@mantine/form";
 import { IconCalendar, IconPlus } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ListCard } from "../_components/ListCard";
-import "@mantine/dates/styles.css";
+import { useDeleteJobLink } from "../network/endpoints/jobOpeningListDelete";
+import { useGetJobsList } from "../network/endpoints/jobOpeningListGet";
+import { useAddNewJob } from "../network/endpoints/jobOpeningListPost";
 
 
 type OgMetaData = {
@@ -61,13 +64,19 @@ const LinkInput = ({ addItem }: { addItem: ({ deadline, urlValue }: { deadline?:
     </Flex>
   );
 };
-export default function ListPage() {
+const ListPage = () => {
+  const { data: list, refetch } = useGetJobsList();
+  const { mutateAsync: postNewLink } = useAddNewJob({
+    onSuccess: (() => { refetch() })
+  });
+  const { mutateAsync: deleteLink } = useDeleteJobLink({
+    onSuccess: (() => { refetch() })
+  });
 
   const form = useForm<{ list: UrlItem[] }>({
     mode: "uncontrolled", initialValues: {
       list: []
     },
-    onValuesChange: (values) => console.log("values", values)
   })
 
   const results = form.getValues().list || [];
@@ -86,21 +95,25 @@ export default function ListPage() {
         },
       }
 
-      form.setValues((prev) => ({
-        list: [...prev.list || [], newData]
-      }))
+      postNewLink(newData)
+
     }
   };
 
-  const deleteLinkItem = (targetId: string) => {
-    form.setValues((prev) => ({
-      list: prev.list?.filter((url) => url.id !== targetId)
-    }))
+  const deleteLinkItem = (targetId: string, url: string) => {
+    if (confirm(`Delete ${url}?`)) {
+      deleteLink(targetId)
+    }
   };
 
   const editLinkItem = (targetId: string) => {
     console.log("editLinkItem", targetId)
   };
+
+  useEffect(() => {
+    form.setValues({ list })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [list])
 
   return (
     <Container>
@@ -141,3 +154,4 @@ export default function ListPage() {
   )
   // );
 }
+export default ListPage
