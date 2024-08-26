@@ -6,7 +6,7 @@ import { dateFormatter } from "@/app/utils/dateFormatter";
 
 type ListCardProp = {
     editLinkItem: (id: string) => void
-    deleteLinkItem: (id: string) => void
+    deleteLinkItem: (id: string, url: string) => void
 } & UrlItem
 
 export const ListCard = (
@@ -21,7 +21,7 @@ export const ListCard = (
     return (
         <Card shadow="sm" padding="md" radius="md" withBorder>
             <Text c="gray">
-                {deadline && dateFormatter(deadline)}
+                {deadline && dateFormatter(deadline.toString())}
             </Text>
             <Flex className={styles.listCardWrapper} justify="space-between" gap="md">
                 <Flex gap="md" justify="space-between" flex={1} align="center">
@@ -45,7 +45,7 @@ export const ListCard = (
                 <UnstyledButton onClick={() => editLinkItem(id)}>
                     <IconEdit color="grey" />
                 </UnstyledButton>
-                <UnstyledButton onClick={() => deleteLinkItem(id)}>
+                <UnstyledButton onClick={() => deleteLinkItem(id, url)}>
                     <IconTrash color="grey" />
                 </UnstyledButton>
             </Flex>
