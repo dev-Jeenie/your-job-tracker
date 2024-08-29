@@ -110,10 +110,10 @@ const ListPage = () => {
     console.log("editLinkItem", targetId)
   };
 
-  useEffect(() => {
-    form.setValues({ list })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [list])
+  // useEffect(() => {
+  //   form.setValues({ list })
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [list])
 
   return (
     <Container>
@@ -135,7 +135,7 @@ const ListPage = () => {
           <LinkInput addItem={addLinkItem} />
         </Stack>
         <Stack gap="md" pt="md">
-          {results?.map(({ id, deadline, ogdata, url }) => {
+          {/* {results?.map(({ id, deadline, ogdata, url }) => {
             return (
               <ListCard
                 key={id}
@@ -147,7 +147,7 @@ const ListPage = () => {
                 deleteLinkItem={deleteLinkItem}
               />
             )
-          })}
+          })} */}
         </Stack>
       </Stack>
     </Container>
