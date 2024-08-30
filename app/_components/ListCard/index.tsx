@@ -27,8 +27,8 @@ export const ListCard = (
                 <Flex gap="md" justify="space-between" flex={1} align="center">
                     <Stack h="100%" w={200} flex={1} justify="space-between">
                         <Box>
-                            <Text fw="bold">{ogdata?.["og:title"]}</Text>
-                            <Text>{ogdata?.["og:description"]}</Text>
+                            <Text fw="bold">{ogdata?.title}</Text>
+                            <Text>{ogdata?.description}</Text>
                         </Box>
                         <Text c="gray" truncate="end">{url}</Text>
                     </Stack>
@@ -37,7 +37,7 @@ export const ListCard = (
                         maw={180}
                         height={120}
                         fallbackSrc="https://placehold.co/600x400?text=Placeholder"
-                        src={ogdata?.["og:image"]}
+                        src={ogdata?.image}
                         alt={url}
                         style={{ borderRadius: "10px" }}
                     />

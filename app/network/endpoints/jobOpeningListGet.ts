@@ -6,7 +6,10 @@ const getJobOpeningList = () =>
   serverInstance
     .get(`/list`)
     .then(serverResponseHandler<UrlItem[]>)
-    .then((res) => res);
+    .then((res) => {
+      console.log("res", res);
+      return res;
+    });
 
 export const useGetJobsList = (props?: Partial<UseQueryOptions<UrlItem[]>>) => {
   return useQuery({
