@@ -4,7 +4,7 @@ import connectMongo from "../lib/mongodb";
 import { Schema, model, models } from "mongoose";
 import { UrlItem } from "@/app/list/page";
 
-const urlItemSchema = new Schema<UrlItem>({
+const jobPostingSchema = new Schema<UrlItem>({
   id: { type: String, required: true },
   url: { type: String, required: true },
   deadline: { type: Date },
@@ -15,7 +15,7 @@ const urlItemSchema = new Schema<UrlItem>({
   },
 });
 
-const JobPosting = models.JobPosting || model("JobPosting", urlItemSchema);
+export const JobPosting = models.JobPosting || model("JobPosting", jobPostingSchema);
 
 export async function GET() {
   await connectMongo();

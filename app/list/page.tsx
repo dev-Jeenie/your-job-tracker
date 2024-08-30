@@ -13,13 +13,13 @@ import { useAddNewJob } from "../network/endpoints/jobOpeningListPost";
 
 
 type OgMetaData = {
-  'og:title'?: string;
-  'og:type'?: string;
-  'og:url'?: string;
-  'og:image'?: string;
-  'og:site_name'?: string;
-  'og:description'?: string;
-  'article:published_time'?: string
+  title?: string;
+  type?: string;
+  url?: string;
+  image?: string;
+  site_name?: string;
+  description?: string;
+  article?: { published_time?: string }
 }
 
 export interface UrlItem {
@@ -73,13 +73,11 @@ const ListPage = () => {
     onSuccess: (() => { refetch() })
   });
 
-  const form = useForm<{ list: UrlItem[] }>({
-    mode: "uncontrolled", initialValues: {
-      list: []
-    },
-  })
-
-  const results = form.getValues().list || [];
+  // const form = useForm<{ list: UrlItem[] }>({
+  //   mode: "uncontrolled", initialValues: {
+  //     list: []
+  //   },
+  // })
 
   const addLinkItem = ({ deadline, urlValue }: { deadline?: UrlItem["deadline"], urlValue: UrlItem["url"] }) => {
     if (urlValue) {
@@ -89,9 +87,9 @@ const ListPage = () => {
         url: urlValue,
         deadline,
         ogdata: {
-          "og:title": "Crawled Data Title",
-          "og:description": "Apply Now!",
-          "og:image": "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png",
+          title: "Crawled Data Title",
+          description: "Apply Now!",
+          image: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png",
         },
       }
 
@@ -124,9 +122,9 @@ const ListPage = () => {
             <Text
               size="xl"
               fw={500}
-              variant={results?.length > 0 ? "gradient" : "text"}
+              variant={list && list?.length > 0 ? "gradient" : "text"}
             >
-              Job Openings ({results?.length})
+              Job Openings ({list?.length ?? "0"})
             </Text>
             <Text inline c="gray" size="sm">
               Click plus button to add list
@@ -135,7 +133,7 @@ const ListPage = () => {
           <LinkInput addItem={addLinkItem} />
         </Stack>
         <Stack gap="md" pt="md">
-          {/* {results?.map(({ id, deadline, ogdata, url }) => {
+          {list?.map(({ id, deadline, ogdata, url }) => {
             return (
               <ListCard
                 key={id}
@@ -147,7 +145,7 @@ const ListPage = () => {
                 deleteLinkItem={deleteLinkItem}
               />
             )
-          })} */}
+          })}
         </Stack>
       </Stack>
     </Container>
