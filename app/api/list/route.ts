@@ -15,7 +15,7 @@ const jobPostingSchema = new Schema<UrlItem>({
   },
 });
 
-export const JobPosting = models.JobPosting || model("JobPosting", jobPostingSchema);
+const JobPosting = models.JobPosting || model("JobPosting", jobPostingSchema);
 
 export async function GET() {
   await connectMongo();
