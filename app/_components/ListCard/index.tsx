@@ -18,6 +18,11 @@ export const ListCard = (
         editLinkItem,
         deleteLinkItem
     }: ListCardProp) => {
+    const parsedUrl = new URL(url);
+    const imageSrc = metadata?.og?.image && metadata?.og?.image[0] === "/" ? `${parsedUrl.origin}/${metadata?.og?.image}` : metadata?.og?.image;
+    
+    // TODO : meta tag 스크래핑 만으로는 static metatag 페이지 대응 불가. 결국은 크롤러가 필요하다
+
     return (
         <Card shadow="sm" padding="md" radius="md" withBorder>
             <Text c="gray">
@@ -37,7 +42,7 @@ export const ListCard = (
                         maw={180}
                         height={120}
                         fallbackSrc="https://placehold.co/600x400?text=Placeholder"
-                        src={metadata?.og?.image}
+                        src={imageSrc}
                         alt={url}
                         style={{ borderRadius: "10px" }}
                     />

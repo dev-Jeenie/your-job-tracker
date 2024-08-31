@@ -1,26 +1,60 @@
-import {
-    MutationOptions,
-    useMutation
-} from "@tanstack/react-query";
+import { MutationOptions, useMutation } from "@tanstack/react-query";
 import { serverInstance, serverResponseHandler } from "../common/server";
 
 type Props = { url: string };
 
-export type MetaData = {
+// export type OgTypeForFetch = {
+//   "og:title": string;
+//   "og:description": string;
+//   "og:image": string;
+//   "og:image:width": string;
+//   "og:image:height": string;
+// };
+
+// export type OgTypeFromServer = {
+//   title?: string;
+//   description?: string;
+//   image?: string;
+// };
+
+export interface MetaData {
   title?: string;
   description?: string;
   headings?: { level: string; text: string }[];
   og?: {
     title?: string;
-    description: string;
-    image: string;
+    description?: string;
+    image?: string;
   };
-  //   "og:title"?: string;
-  //   "og:description"?: string;
-  //   "og:image"?: string;
-  //   "og:image:width"?: string;
-  //   "og:image:height"?: string;
-};
+  "og:title"?: string;
+  "og:description"?: string;
+  "og:image"?: string;
+  "og:image:width"?: string;
+  "og:image:height"?: string;
+}
+// export interface MetaData<P> {
+//   // metadata를 fetch할 때
+//   title?: string;
+//   description?: string;
+//   headings?: { level: string; text: string }[];
+//   "og:title": string;
+//   "og:description": string;
+//   "og:image": string;
+//   "og:image:width": string;
+//   "og:image:height": string;
+// }
+
+// export interface MetaData<P> {
+//   // fetch한 metadata를 DB에 set할 때
+//   title?: string;
+//   description?: string;
+//   headings?: { level: string; text: string }[];
+//   og: {
+//     title?: string;
+//     description?: string;
+//     image?: string;
+//   };
+// }
 
 // TODO : 메타데이터 캐싱 처리
 // 1. url과 유저가 직접 입력한 데이터만 서버에 저장. 메타태그는 그때그때 불러오는 방식

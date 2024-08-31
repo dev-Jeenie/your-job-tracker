@@ -9,8 +9,8 @@ import { ListCard } from "../_components/ListCard";
 import { useDeleteJobLink } from "../network/endpoints/jobOpeningListDelete";
 import { useGetJobsList } from "../network/endpoints/jobOpeningListGet";
 import { useAddJobPosting } from "../network/endpoints/jobOpeningListPost";
-import { useGetMetadata } from "../network/endpoints/metadataGet";
 import type { MetaData } from "../network/endpoints/metadataGet";
+import { useGetMetadata } from "../network/endpoints/metadataGet";
 
 
 export interface JobPosting {
@@ -18,6 +18,7 @@ export interface JobPosting {
   url: string;
   deadline?: Date;
   metadata?: MetaData;
+  // metadata?: MetaData<OgTypeFromServer>;
 }
 
 const LinkInput = ({ addItem }: { addItem: ({ deadline, urlValue }: { deadline?: JobPosting["deadline"], urlValue: JobPosting["url"] }) => void }) => {
@@ -79,11 +80,19 @@ const ListPage = () => {
 
   const addLinkItem = async ({ deadline, urlValue }: { deadline?: JobPosting["deadline"], urlValue: JobPosting["url"] }) => {
     const metadata = await getMetadata({ url: urlValue })
+
+    const newMetadata = {
+      title: metadata?.title,
+      description: metadata?.description,
+      og: {
+        image: metadata?.["og:image"]
+      }
+    }
     postJobPosting({
       id: crypto.randomUUID(),
       url: urlValue,
       deadline,
-      metadata
+      metadata: newMetadata
     })
   };
 
