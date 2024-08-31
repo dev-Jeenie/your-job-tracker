@@ -1,16 +1,18 @@
 import { NextResponse } from "next/server";
 import connectMongo from "../../lib/mongodb";
 import { model, models, Schema } from "mongoose";
-import { UrlItem } from "@/app/list/page";
+import type { JobPosting } from "@/app/list/page";
 
-const jobPostingSchema = new Schema<UrlItem>({
+const jobPostingSchema = new Schema<JobPosting>({
   id: { type: String, required: true },
   url: { type: String, required: true },
   deadline: { type: Date },
-  ogdata: {
+  metadata: {
     title: { type: String },
     description: { type: String },
-    image: { type: String },
+    og: {
+      image: { type: String },
+    },
   },
 });
 
