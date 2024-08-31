@@ -3,34 +3,26 @@
 import { Box, Container, Flex, Group, Stack, Text, TextInput, Title, UnstyledButton } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
 import "@mantine/dates/styles.css";
-import { useForm } from "@mantine/form";
 import { IconCalendar, IconPlus } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ListCard } from "../_components/ListCard";
 import { useDeleteJobLink } from "../network/endpoints/jobOpeningListDelete";
 import { useGetJobsList } from "../network/endpoints/jobOpeningListGet";
-import { useAddNewJob } from "../network/endpoints/jobOpeningListPost";
+import { useAddJobPosting } from "../network/endpoints/jobOpeningListPost";
+import type { MetaData } from "../network/endpoints/metadataGet";
+import { useGetMetadata } from "../network/endpoints/metadataGet";
 
 
-type OgMetaData = {
-  title?: string;
-  type?: string;
-  url?: string;
-  image?: string;
-  site_name?: string;
-  description?: string;
-  article?: { published_time?: string }
-}
-
-export interface UrlItem {
+export interface JobPosting {
   id: string;
   url: string;
   deadline?: Date;
-  ogdata?: OgMetaData;
+  metadata?: MetaData;
+  // metadata?: MetaData<OgTypeFromServer>;
 }
 
-const LinkInput = ({ addItem }: { addItem: ({ deadline, urlValue }: { deadline?: UrlItem["deadline"], urlValue: UrlItem["url"] }) => void }) => {
-  const [urlValue, setUrlValue] = useState<UrlItem["url"]>("")
+const LinkInput = ({ addItem }: { addItem: ({ deadline, urlValue }: { deadline?: JobPosting["deadline"], urlValue: JobPosting["url"] }) => void }) => {
+  const [urlValue, setUrlValue] = useState<JobPosting["url"]>("")
   const [deadline, setDeadline] = useState<Date>()
 
   return (
@@ -64,38 +56,44 @@ const LinkInput = ({ addItem }: { addItem: ({ deadline, urlValue }: { deadline?:
     </Flex>
   );
 };
+
 const ListPage = () => {
   const { data: list, refetch } = useGetJobsList();
-  const { mutateAsync: postNewLink } = useAddNewJob({
-    onSuccess: (() => { refetch() })
+  const { mutateAsync: postJobPosting } = useAddJobPosting({
+    onSuccess: (() => { refetch() }),
+    onError: (err) => console.log("postJobPosting onError", err)
+
+  });
+  const { mutateAsync: getMetadata } = useGetMetadata({
+    onSuccess: (res) => console.log("getMetadata onSuccess", res),
+    onError: (err) => console.log("getMetadata onError", err)
   });
   const { mutateAsync: deleteLink } = useDeleteJobLink({
     onSuccess: (() => { refetch() })
   });
 
-  // const form = useForm<{ list: UrlItem[] }>({
+  // const form = useForm<{ list: JobPosting[] }>({
   //   mode: "uncontrolled", initialValues: {
   //     list: []
   //   },
   // })
 
-  const addLinkItem = ({ deadline, urlValue }: { deadline?: UrlItem["deadline"], urlValue: UrlItem["url"] }) => {
-    if (urlValue) {
-      const newId = crypto.randomUUID();
-      const newData = {
-        id: newId,
-        url: urlValue,
-        deadline,
-        ogdata: {
-          title: "Crawled Data Title",
-          description: "Apply Now!",
-          image: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png",
-        },
+  const addLinkItem = async ({ deadline, urlValue }: { deadline?: JobPosting["deadline"], urlValue: JobPosting["url"] }) => {
+    const metadata = await getMetadata({ url: urlValue })
+
+    const newMetadata = {
+      title: metadata?.title,
+      description: metadata?.description,
+      og: {
+        image: metadata?.["og:image"]
       }
-
-      postNewLink(newData)
-
     }
+    postJobPosting({
+      id: crypto.randomUUID(),
+      url: urlValue,
+      deadline,
+      metadata: newMetadata
+    })
   };
 
   const deleteLinkItem = (targetId: string, url: string) => {
@@ -133,12 +131,12 @@ const ListPage = () => {
           <LinkInput addItem={addLinkItem} />
         </Stack>
         <Stack gap="md" pt="md">
-          {list?.map(({ id, deadline, ogdata, url }) => {
+          {list?.map(({ id, deadline, metadata, url }) => {
             return (
               <ListCard
                 key={id}
                 id={id}
-                ogdata={ogdata}
+                metadata={metadata}
                 url={url}
                 deadline={deadline}
                 editLinkItem={editLinkItem}

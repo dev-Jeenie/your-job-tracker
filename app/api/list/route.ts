@@ -1,17 +1,18 @@
 import { NextResponse } from "next/server";
 import connectMongo from "../lib/mongodb";
-
 import { Schema, model, models } from "mongoose";
-import { UrlItem } from "@/app/list/page";
+import type { JobPosting } from "@/app/list/page";
 
-const jobPostingSchema = new Schema<UrlItem>({
+const jobPostingSchema = new Schema<JobPosting>({
   id: { type: String, required: true },
   url: { type: String, required: true },
   deadline: { type: Date },
-  ogdata: {
+  metadata: {
     title: { type: String },
     description: { type: String },
-    image: { type: String },
+    og: {
+      image: { type: String },
+    },
   },
 });
 
@@ -26,15 +27,13 @@ export async function GET() {
 // 새로운 jobPosting 추가
 export async function POST(request: Request) {
   await connectMongo();
-  const { id, url, deadline, ogdata } = (await request.json()) as UrlItem;
-
-  console.log("POST", id, url, deadline, ogdata);
+  const { id, url, deadline, metadata } = (await request.json()) as JobPosting;
 
   const newJobPosting = new JobPosting({
     id,
     url,
     deadline,
-    ogdata,
+    metadata,
   });
   await newJobPosting.save();
   return NextResponse.json(newJobPosting);
