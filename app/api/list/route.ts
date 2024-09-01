@@ -6,7 +6,7 @@ import type { JobPosting } from "@/app/list/page";
 const jobPostingSchema = new Schema<JobPosting>({
   id: { type: String, required: true },
   url: { type: String, required: true },
-  deadline: { type: Date },
+  deadline: { type: Date,required: true },
   metadata: {
     title: { type: String },
     description: { type: String },
