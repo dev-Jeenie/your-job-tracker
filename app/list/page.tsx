@@ -87,13 +87,17 @@ const ListPage = () => {
   const { mutateAsync: postJobPosting } = useAddJobPosting({
     onSuccess() {
       notifications.show({
+        position: 'bottom-center',
+        withCloseButton: true,
         color: "green",
         message: "Your Job posting has been successfully added!",
       });
       refetch()
     },
-    onError(err) {
+    onError() {
       notifications.show({
+        position: 'bottom-center',
+        withCloseButton: true,
         color: "red",
         title: "An error has occurred",
         message: "Try Again",
@@ -105,7 +109,15 @@ const ListPage = () => {
     onError: (err) => console.log("getMetadata onError", err)
   });
   const { mutateAsync: deleteLink } = useDeleteJobLink({
-    onSuccess: (() => { refetch() })
+    onSuccess() {
+      notifications.show({
+        position: 'bottom-center',
+        withCloseButton: true,
+        color: "green",
+        message: "Successfully deleted",
+      });
+      refetch()
+    },
   });
 
   const addLinkItem = async ({ deadline, urlValue }: { deadline: JobPosting["deadline"], urlValue: JobPosting["url"] }) => {
@@ -139,7 +151,7 @@ const ListPage = () => {
   return (
     <Container>
       <Stack mt="xl" gap="md">
-        <Title>Add your Job Posting Link</Title>
+        <Title ff="monospace">Add your Job Posting Link</Title>
         <Stack>
           <Box>
             <Text

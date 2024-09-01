@@ -25,7 +25,7 @@ export const ListCard = (
 
     return (
         <Card shadow="sm" padding="md" radius="md" withBorder className={styles.listcard}>
-            <Text c="gray">
+            <Text ff="monospace" c="blue" fw="bold" size="xl">
                 {deadline && dateFormatter(deadline.toString())}
             </Text>
             <Flex className={styles.listCardWrapper} justify="space-between" gap="md">
@@ -54,6 +54,6 @@ export const ListCard = (
                     <IconTrash color="grey" />
                 </UnstyledButton>
             </Flex>
-        </Card >
+        </Card>
     )
 }
