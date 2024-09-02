@@ -1,7 +1,7 @@
 "use client";
 
-import { Box, Container, Flex, Group, Stack, Text, TextInput, Title, UnstyledButton } from "@mantine/core";
-import { DateTimePicker } from "@mantine/dates";
+import { Box, Card, Container, Flex, Group, Image, Indicator, Stack, Text, TextInput, Title, UnstyledButton } from "@mantine/core";
+import { Calendar, DateTimePicker } from "@mantine/dates";
 import "@mantine/dates/styles.css";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
@@ -13,6 +13,7 @@ import { useAddJobPosting } from "../network/endpoints/jobOpeningListPost";
 import type { MetaData } from "../network/endpoints/metadataGet";
 import { useGetMetadata } from "../network/endpoints/metadataGet";
 import { urlValidator } from "../utils/urlValidator";
+import { groupByDeadline } from "../utils/groupByDeadline";
 
 
 export interface JobPosting {
@@ -148,6 +149,8 @@ const ListPage = () => {
     console.log("editLinkItem", targetId)
   };
 
+  const groupedData = groupByDeadline(list || [])
+
   return (
     <Container>
       <Stack mt="xl" gap="md">
@@ -168,6 +171,35 @@ const ListPage = () => {
           <LinkInput addItem={addLinkItem} />
         </Stack>
         <Stack gap="md" pt="md">
+          <Calendar
+            renderDay={(date) => {
+              const day = date.getDate();
+              return (
+                <Indicator size={6} color="red" offset={-2} disabled={day !== 1}>
+                  <div>{day}</div>
+                </Indicator>)
+            }}
+          // renderDay={(date) => {
+          //   const dateKey = date.toISOString().split('T')[0];
+          //   const items = groupedData[dateKey] || [];
+
+          //   return (
+          //     <div>
+          //       <div>{date.getDate()}</div>
+          //       {items.map((item) => (
+          //         <Card key={item.id} shadow="sm" p="xs" style={{ marginTop: 5 }}>
+          //           <Image
+          //             src={item?.metadata?.og?.image}
+          //             alt={item?.metadata?.title}
+          //             height={50}
+          //           />
+          //           <Text size="xs">{item?.metadata?.title}</Text>
+          //         </Card>
+          //       ))}
+          //     </div>
+          //   );
+          // }} 
+          />
           {list?.map(({ id, deadline, metadata, url }) => {
             return (
               <ListCard
