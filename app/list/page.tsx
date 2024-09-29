@@ -1,11 +1,12 @@
 "use client";
 
-import { Box, Card, Container, Flex, Group, Image, Indicator, Stack, Text, TextInput, Title, UnstyledButton } from "@mantine/core";
-import { Calendar, DateTimePicker } from "@mantine/dates";
+import { Box, Container, Flex, Group, Indicator, Stack, Text, TextInput, Title, UnstyledButton } from "@mantine/core";
+import { DatePicker, DateTimePicker } from "@mantine/dates";
 import "@mantine/dates/styles.css";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconCalendar, IconPlus } from "@tabler/icons-react";
+import { useState } from "react";
 import { ListCard } from "../_components/ListCard";
 import { useDeleteJobLink } from "../network/endpoints/jobOpeningListDelete";
 import { useGetJobsList } from "../network/endpoints/jobOpeningListGet";
@@ -13,7 +14,6 @@ import { useAddJobPosting } from "../network/endpoints/jobOpeningListPost";
 import type { MetaData } from "../network/endpoints/metadataGet";
 import { useGetMetadata } from "../network/endpoints/metadataGet";
 import { urlValidator } from "../utils/urlValidator";
-import { groupByDeadline } from "../utils/groupByDeadline";
 
 
 export interface JobPosting {
@@ -84,6 +84,7 @@ const LinkInput = ({ addItem }: { addItem: ({ deadline, urlValue }: { deadline: 
 };
 
 const ListPage = () => {
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const { data: list, refetch } = useGetJobsList();
   const { mutateAsync: postJobPosting } = useAddJobPosting({
     onSuccess() {
@@ -149,7 +150,6 @@ const ListPage = () => {
     console.log("editLinkItem", targetId)
   };
 
-  const groupedData = groupByDeadline(list || [])
 
   return (
     <Container>
@@ -171,48 +171,35 @@ const ListPage = () => {
           <LinkInput addItem={addLinkItem} />
         </Stack>
         <Stack gap="md" pt="md">
-          <Calendar
+          <DatePicker
+            value={selectedDate}
+            onChange={setSelectedDate}
             renderDay={(date) => {
-              const day = date.getDate();
+              const day = date.toISOString().split('T')[0];
+              const deadlines = list?.map(job => job.deadline.toString().split('T')[0]);
+              const isMarked = deadlines?.includes(day)
               return (
-                <Indicator size={6} color="red" offset={-2} disabled={day !== 1}>
-                  <div>{day}</div>
-                </Indicator>)
+                <Indicator size={6} color="red" offset={-2} disabled={!isMarked}>
+                  <div>{date.getDate()}</div>
+                </Indicator>
+              )
             }}
-          // renderDay={(date) => {
-          //   const dateKey = date.toISOString().split('T')[0];
-          //   const items = groupedData[dateKey] || [];
-
-          //   return (
-          //     <div>
-          //       <div>{date.getDate()}</div>
-          //       {items.map((item) => (
-          //         <Card key={item.id} shadow="sm" p="xs" style={{ marginTop: 5 }}>
-          //           <Image
-          //             src={item?.metadata?.og?.image}
-          //             alt={item?.metadata?.title}
-          //             height={50}
-          //           />
-          //           <Text size="xs">{item?.metadata?.title}</Text>
-          //         </Card>
-          //       ))}
-          //     </div>
-          //   );
-          // }} 
           />
-          {list?.map(({ id, deadline, metadata, url }) => {
-            return (
-              <ListCard
-                key={id}
-                id={id}
-                metadata={metadata}
-                url={url}
-                deadline={deadline}
-                editLinkItem={editLinkItem}
-                deleteLinkItem={deleteLinkItem}
-              />
-            )
-          })}
+          {
+            list?.map(({ id, deadline, metadata, url }) => {
+              return (
+                <ListCard
+                  key={id}
+                  id={id}
+                  metadata={metadata}
+                  url={url}
+                  deadline={deadline}
+                  editLinkItem={editLinkItem}
+                  deleteLinkItem={deleteLinkItem}
+                />
+              )
+            })
+          }
         </Stack>
       </Stack>
     </Container>
