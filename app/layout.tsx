@@ -2,6 +2,7 @@
 
 import { Container, createTheme, MantineProvider } from "@mantine/core";
 import '@mantine/core/styles.css';
+import { Notifications } from "@mantine/notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 
@@ -35,6 +36,7 @@ export default function RootLayout({
       <body>
         <QueryClientProvider client={queryClient}>
           <MantineProvider theme={theme}>
+            <Notifications />
             <Container size="sm">
               {children}
             </Container>

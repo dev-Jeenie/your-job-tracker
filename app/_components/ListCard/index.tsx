@@ -1,4 +1,4 @@
-import { Box, Card, Flex, Image, Stack, Text, UnstyledButton } from "@mantine/core";
+import { Anchor, Box, Card, Flex, Image, Stack, Text, UnstyledButton } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { JobPosting } from "../../list/page";
 import styles from "./list.module.css";
@@ -20,12 +20,12 @@ export const ListCard = (
     }: ListCardProp) => {
     const parsedUrl = new URL(url);
     const imageSrc = metadata?.og?.image && metadata?.og?.image[0] === "/" ? `${parsedUrl.origin}/${metadata?.og?.image}` : metadata?.og?.image;
-    
+
     // TODO : meta tag 스크래핑 만으로는 static metatag 페이지 대응 불가. 결국은 크롤러가 필요하다
 
     return (
-        <Card shadow="sm" padding="md" radius="md" withBorder>
-            <Text c="gray">
+        <Card shadow="sm" padding="md" radius="md" withBorder className={styles.listcard}>
+            <Text ff="monospace" c="blue" fw="bold" size="xl">
                 {deadline && dateFormatter(deadline.toString())}
             </Text>
             <Flex className={styles.listCardWrapper} justify="space-between" gap="md">
@@ -35,7 +35,7 @@ export const ListCard = (
                             <Text fw="bold">{metadata?.title}</Text>
                             <Text>{metadata?.description}</Text>
                         </Box>
-                        <Text c="gray" truncate="end">{url}</Text>
+                        <Anchor href={url} target="_blank">{url}</Anchor>
                     </Stack>
                     <Image
                         key="image"
