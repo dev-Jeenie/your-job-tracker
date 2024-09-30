@@ -1,5 +1,5 @@
-import { Main } from "@/app/_components/Main";
+import ListPage from "./list/page";
 
 export default function Home() {
-  return <Main />;
+  return <ListPage/>;
 }
