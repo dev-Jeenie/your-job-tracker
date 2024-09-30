@@ -37,7 +37,7 @@ export default function RootLayout({
         <QueryClientProvider client={queryClient}>
           <MantineProvider theme={theme}>
             <Notifications />
-            <Container size="sm">
+            <Container size="lg">
               {children}
             </Container>
           </MantineProvider>

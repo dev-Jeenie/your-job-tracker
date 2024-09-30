@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Container, Flex, Group, Indicator, Stack, Text, TextInput, Title, UnstyledButton } from "@mantine/core";
+import { Box, Button, Container, Flex, FloatingIndicator, Group, Indicator, Paper, Stack, Text, TextInput, Title, UnstyledButton } from "@mantine/core";
 import { DatePicker, DateTimePicker } from "@mantine/dates";
 import "@mantine/dates/styles.css";
 import { useForm } from "@mantine/form";
@@ -14,7 +14,7 @@ import { useAddJobPosting } from "../network/endpoints/jobOpeningListPost";
 import type { MetaData } from "../network/endpoints/metadataGet";
 import { useGetMetadata } from "../network/endpoints/metadataGet";
 import { urlValidator } from "../utils/urlValidator";
-
+import classes from './list.module.css';
 
 export interface JobPosting {
   id: string;
@@ -50,33 +50,34 @@ const LinkInput = ({ addItem }: { addItem: ({ deadline, urlValue }: { deadline: 
 
   return (
     <form onSubmit={handleSubmit}>
-      <Flex align="center" justify="space-between" gap="md">
-        <Group w="100%" gap="sm" h={90} align="flex-start">
+      <Flex align="flex-end" justify="space-between" gap="md">
+          <Group flex={1}>
           <TextInput
-            maw={410}
+            flex={1}
             w="100%"
-            size="md"
-            label="Url"
+            size="xl"
+            label="채용공고 링크를 입력하세요."
             placeholder="add your Job Posting link"
             key={form.key("url")}
             {...form.getInputProps("url")}
           />
           <DateTimePicker
-            size="md"
+            size="xl"
             flex={1}
+            maw={300}
             clearable
             highlightToday
             rightSection={<IconCalendar />}
-            label="Deadline"
+            label="마감일을 입력하세요."
             placeholder="Select deadline"
             key={form.key("deadline")}
             {...form.getInputProps("deadline")}
 
           />
-        </Group>
-        <UnstyledButton type="submit">
-          <IconPlus color="grey" />
-        </UnstyledButton>
+          </Group>
+        <Button color="cyan" type="submit" size="lg">
+          <IconPlus color="white"/>
+        </Button>
       </Flex>
     </form>
 
@@ -85,6 +86,9 @@ const LinkInput = ({ addItem }: { addItem: ({ deadline, urlValue }: { deadline: 
 
 const ListPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
+  const [controlsRefs, setControlsRefs] = useState<Record<string, HTMLButtonElement | null>>({});
+  const [active, setActive] = useState(0);
   const { data: list, refetch } = useGetJobsList();
   const { mutateAsync: postJobPosting } = useAddJobPosting({
     onSuccess() {
@@ -146,32 +150,75 @@ const ListPage = () => {
     }
   };
 
-  const editLinkItem = (targetId: string) => {
-    console.log("editLinkItem", targetId)
+
+  const setControlRef = (index: number) => (node: HTMLButtonElement) => {
+    controlsRefs[index] = node;
+    setControlsRefs(controlsRefs);
   };
 
+  const controls = ['list', 'calendar'].map((item, index) => (
+    <UnstyledButton
+      key={item}
+      className={classes.control}
+      ref={setControlRef(index)}
+      onClick={() => setActive(index)}
+      mod={{ active: active === index }}
+      style={{padding:"14px 26px"}}
+    >
+      <span className={classes.controlLabel}>{item}</span>
+    </UnstyledButton>
+  ));
+  
 
   return (
     <Container>
-      <Stack mt="xl" gap="md">
-        <Title ff="monospace">Add your Job Posting Link</Title>
-        <Stack>
+      <Stack mt="xl" gap="xl">
+        <Title ff="heading">Job Trackers</Title>
+        <Stack gap="lg">
           <Box>
             <Text
               size="xl"
               fw={500}
               variant={list && list?.length > 0 ? "gradient" : "text"}
             >
-              Job Postings ({list?.length ?? "0"})
+              내 채용공고 ({list?.length ?? "0"})
             </Text>
-            <Text inline c="gray" size="sm">
-              Click plus button to add list
+            <Text inline c="gray" size="lg">
+              + 버튼을 눌러 채용공고를 등록하세요
             </Text>
           </Box>
           <LinkInput addItem={addLinkItem} />
         </Stack>
-        <Stack gap="md" pt="md">
+        <Flex>
+          <Stack gap="xs">
+          <Text fw="500" size="xl">보기방식 설정</Text>
+          <div className={classes.root} ref={setRootRef}>
+            {controls}
+            <FloatingIndicator
+              target={controlsRefs[active]}
+              parent={rootRef}
+              className={classes.indicator}
+            />
+          </div>
+          </Stack>
+        </Flex>
+        {active === 0 ? 
+          list?.map(({ id, deadline, metadata, url }) => {
+            return (
+              <ListCard
+                key={id}
+                id={id}
+                metadata={metadata}
+                url={url}
+                deadline={deadline}
+                deleteLinkItem={deleteLinkItem}
+              />
+            )
+          })
+         : 
+        <Flex gap="md" pt="md">
           <DatePicker
+          size="lg"
             value={selectedDate}
             onChange={setSelectedDate}
             renderDay={(date) => {
@@ -185,25 +232,45 @@ const ListPage = () => {
               )
             }}
           />
-          {
-            list?.map(({ id, deadline, metadata, url }) => {
-              return (
-                <ListCard
-                  key={id}
-                  id={id}
-                  metadata={metadata}
-                  url={url}
-                  deadline={deadline}
-                  editLinkItem={editLinkItem}
-                  deleteLinkItem={deleteLinkItem}
-                />
-              )
-            })
-          }
-        </Stack>
+          <Box flex={1}>
+          {selectedDate && list && list.length > 0 ? (
+        (() => {
+          const filteredJobs = list.filter(job => {
+            const jobDeadline = new Date(job.deadline).toISOString().split('T')[0];
+            const selectedDay = selectedDate.toISOString().split('T')[0];
+            return jobDeadline === selectedDay;
+          });
+          return filteredJobs.length > 0 ? (
+            filteredJobs.map(({ id, deadline, metadata, url }) => (
+              <ListCard
+                key={id}
+                id={id}
+                metadata={metadata}
+                url={url}
+                deadline={deadline}
+                deleteLinkItem={deleteLinkItem}
+              />
+            ))
+          ) : (
+            <Paper shadow="sm" p="md" mb="xl" withBorder flex={1} h="100%">
+              <Flex align="center" justify="center" h="100%">
+                <Text size="lg">선택한 날짜에 등록된 채용공고가 없습니다.</Text>
+              </Flex>
+            </Paper>
+          );
+        })()
+      ) : (
+        <Paper shadow="sm" p="md" mb="xl" withBorder flex={1} h="100%">
+        <Flex align="center" justify="center" h="100%">
+          <Text size="lg">캘린더에서 날짜를 선택하세요</Text>
+          </Flex>
+        </Paper>
+      )}
+          </Box>
+        </Flex>
+      }
       </Stack>
     </Container>
   )
-  // );
 }
 export default ListPage
