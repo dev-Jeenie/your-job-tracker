@@ -5,7 +5,7 @@ const connectMongo = async () => {
     console.log("Already connected");
     return;
   }
-  await mongoose.connect("mongodb://localhost:27017/JobTrackerDB");
+  await mongoose.connect(process.env.MONGODB_URI || "");
   console.log("Connected");
 };
 
