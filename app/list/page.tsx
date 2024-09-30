@@ -203,7 +203,7 @@ const ListPage = () => {
           </Stack>
         </Flex>
         {active === 0 ? 
-          list?.map(({ id, deadline, metadata, url }) => {
+          ( list && list.length > 0 ? list?.map(({ id, deadline, metadata, url }) => {
             return (
               <ListCard
                 key={id}
@@ -214,7 +214,12 @@ const ListPage = () => {
                 deleteLinkItem={deleteLinkItem}
               />
             )
-          })
+          }):
+          <Paper shadow="sm" p="md" mb="xl" withBorder flex={1} h="100%">
+          <Flex align="center" justify="center" h="300px">
+            <Text size="lg">채용공고를 등록해보세요.</Text>
+            </Flex>
+          </Paper>)
          : 
         <Flex gap="md" pt="md">
           <DatePicker
