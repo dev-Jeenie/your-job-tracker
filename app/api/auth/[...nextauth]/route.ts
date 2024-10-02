@@ -11,7 +11,7 @@ const handler = NextAuth({
 	],
   callbacks: {
     async redirect() {
-      return `${process.env.NEXTAUTH_URL}/list`;
+      return `${process.env.NODE_ENV === "production" ? process.env.NEXTAUTH_URL : "http://localhost:3000"}/list`;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
