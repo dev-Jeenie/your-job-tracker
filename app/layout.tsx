@@ -5,6 +5,7 @@ import '@mantine/core/styles.css';
 import { Notifications } from "@mantine/notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
+import AuthContext from "./context/AuthContext";
 
 const theme = createTheme({
   /** Put your mantine theme override here */
@@ -34,6 +35,7 @@ export default function RootLayout({
   return (
     <html>
       <body>
+        <AuthContext>
         <QueryClientProvider client={queryClient}>
           <MantineProvider theme={theme}>
             <Notifications />
@@ -42,6 +44,7 @@ export default function RootLayout({
             </Container>
           </MantineProvider>
         </QueryClientProvider>
+        </AuthContext>
       </body>
     </html>
 

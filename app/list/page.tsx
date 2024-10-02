@@ -1,5 +1,6 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import { Box, Button, Container, Flex, FloatingIndicator, Group, Indicator, Paper, Stack, Text, TextInput, Title, UnstyledButton } from "@mantine/core";
 import { DatePicker, DateTimePicker } from "@mantine/dates";
 import "@mantine/dates/styles.css";
@@ -89,6 +90,7 @@ const ListPage = () => {
   const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
   const [controlsRefs, setControlsRefs] = useState<Record<string, HTMLButtonElement | null>>({});
   const [active, setActive] = useState(0);
+  const { data: session } = useSession();
   const { data: list, refetch } = useGetJobsList();
   const { mutateAsync: postJobPosting } = useAddJobPosting({
     onSuccess() {
@@ -96,7 +98,7 @@ const ListPage = () => {
         position: 'bottom-center',
         withCloseButton: true,
         color: "green",
-        message: "Your Job posting has been successfully added!",
+        message: "채용공고가 등록되었습니다.",
       });
       refetch()
     },
@@ -105,8 +107,8 @@ const ListPage = () => {
         position: 'bottom-center',
         withCloseButton: true,
         color: "red",
-        title: "An error has occurred",
-        message: "Try Again",
+        title: "Error",
+        message: "오류가 발생했습니다. 다시 시도해주세요.",
       });
     },
   });
@@ -145,7 +147,7 @@ const ListPage = () => {
   };
 
   const deleteLinkItem = (targetId: string, url: string) => {
-    if (confirm(`Delete ${url}?`)) {
+    if (confirm(`삭제하시겠습니까?`)) {
       deleteLink(targetId)
     }
   };
