@@ -3,10 +3,18 @@ import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { serverInstance, serverResponseHandler } from "../common/server";
 
 const getJobOpeningList = () =>
-  serverInstance
+  {
+    const list = JSON.parse(
+      localStorage.getItem("JobPostings") ?? "[]"
+    );
+    return list;
+    return (
+      serverInstance
     .get(`/list`)
     .then(serverResponseHandler<JobPosting[]>)
-    .then((res) => res);
+    .then((res) => res)
+  )
+};
 
 export const useGetJobsList = (
   props?: Partial<UseQueryOptions<JobPosting[]>>

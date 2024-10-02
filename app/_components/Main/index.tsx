@@ -17,25 +17,25 @@ import { redirect } from "next/navigation";
 export const Main = () => {
   const { data: session } = useSession();
 
-  useEffect(() => {
-    if(session) {
-      redirect("/list")
-    }
-  },[session])
-
   return (
     <>
     <Stack h="100vh" justify="center" align="center">
       <Stack gap="md">
 
       <UnstyledButton size="lg" color="white"
+       style={{border:"1px solid gray", borderRadius:"50px", padding:"15px 30px 15px 30px" }}>
+        <Link href="/list" style={{textDecoration:"none"}}>
+          <Text c="dark">비회원으로 시작하기</Text>
+        </Link>
+      </UnstyledButton>
+      {/* <UnstyledButton size="lg" color="white"
        style={{border:"1px solid gray", borderRadius:"50px", padding:"15px 30px 15px 30px" }}
         onClick={() => signIn("google")}>
           <Group gap="sm">
             <Image src={GoogleSVG} width={24} alt="google login" />
             <Text c="dark">구글로 시작하기</Text>
           </Group>
-      </UnstyledButton>
+      </UnstyledButton> */}
       </Stack>
     </Stack>
     </>
