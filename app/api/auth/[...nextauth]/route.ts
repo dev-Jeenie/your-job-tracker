@@ -9,6 +9,13 @@ const handler = NextAuth({
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || ""
 	  }),
 	],
+  callbacks: {
+    async redirect() {
+      return `${process.env.NEXTAUTH_URL}/list`;
+    },
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+  
 });
 
 export { handler as GET, handler as POST }

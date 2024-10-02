@@ -17,11 +17,6 @@ import { redirect } from "next/navigation";
 export const Main = () => {
   const { data: session } = useSession();
 
-  useEffect(() => {
-    if(session) {
-      redirect("/list")
-    }
-  },[session])
 
   return (
     <>
