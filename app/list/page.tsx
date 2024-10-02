@@ -90,7 +90,7 @@ const ListPage = () => {
   const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
   const [controlsRefs, setControlsRefs] = useState<Record<string, HTMLButtonElement | null>>({});
   const [active, setActive] = useState(0);
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
   const { data: list, refetch } = useGetJobsList();
   const { mutateAsync: postJobPosting } = useAddJobPosting({
     onSuccess() {
@@ -113,8 +113,15 @@ const ListPage = () => {
     },
   });
   const { mutateAsync: getMetadata } = useGetMetadata({
-    onSuccess: (res) => console.log("getMetadata onSuccess", res),
-    onError: (err) => console.log("getMetadata onError", err)
+    onError: (err) => {
+      notifications.show({
+        position: 'bottom-center',
+        withCloseButton: true,
+        color: "red",
+        title: "Error",
+        message: "데이터를 찾을 수 없습니다. 다른 URL을 시도해보세요.",
+      });
+    }
   });
   const { mutateAsync: deleteLink } = useDeleteJobLink({
     onSuccess() {
@@ -130,7 +137,6 @@ const ListPage = () => {
 
   const addLinkItem = async ({ deadline, urlValue }: { deadline: JobPosting["deadline"], urlValue: JobPosting["url"] }) => {
     const metadata = await getMetadata({ url: urlValue })
-
     const newMetadata = {
       title: metadata?.title,
       description: metadata?.description,
