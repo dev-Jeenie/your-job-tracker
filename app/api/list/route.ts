@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import connectMongo from "../lib/mongodb";
 import { Schema, model, models } from "mongoose";
 import type { JobPosting } from "@/app/list/page";
+import { getServerSession } from "next-auth";
+import { useSession } from "next-auth/react";
 
 const jobPostingSchema = new Schema<JobPosting>({
   id: { type: String, required: true },
@@ -19,8 +21,10 @@ const jobPostingSchema = new Schema<JobPosting>({
 const JobPosting = models.JobPosting || model("JobPosting", jobPostingSchema);
 
 export async function GET() {
+  const { data: session } = useSession();
+  const userId = session?.user?.email;
   await connectMongo();
-  const jobPostings = await JobPosting.find();
+  const jobPostings = await JobPosting.find({userId});
   return NextResponse.json(jobPostings);
 }
 
@@ -28,11 +32,14 @@ export async function GET() {
 export async function POST(request: Request) {
   await connectMongo();
   const { id, url, deadline, metadata } = (await request.json()) as JobPosting;
-
+  
+  const { data: session } = useSession();
+  const userId = session?.user?.email;
   const newJobPosting = new JobPosting({
     id,
     url,
     deadline,
+    userId,
     metadata,
   });
   await newJobPosting.save();

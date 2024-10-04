@@ -21,6 +21,7 @@ export interface JobPosting {
   id: string;
   url: string;
   deadline: Date;
+  userId:string;
   metadata?: MetaData;
   // metadata?: MetaData<OgTypeFromServer>;
 }
@@ -90,7 +91,8 @@ const ListPage = () => {
   const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
   const [controlsRefs, setControlsRefs] = useState<Record<string, HTMLButtonElement | null>>({});
   const [active, setActive] = useState(0);
-  // const { data: session } = useSession();
+  const { data: session } = useSession();
+  const userId = session?.user?.email;
   const { data: list, refetch } = useGetJobsList();
   const { mutateAsync: postJobPosting } = useAddJobPosting({
     onSuccess() {
@@ -136,6 +138,7 @@ const ListPage = () => {
   });
 
   const addLinkItem = async ({ deadline, urlValue }: { deadline: JobPosting["deadline"], urlValue: JobPosting["url"] }) => {
+    if(!userId) return;
     const metadata = await getMetadata({ url: urlValue })
     const newMetadata = {
       title: metadata?.title,
@@ -148,6 +151,7 @@ const ListPage = () => {
       id: crypto.randomUUID(),
       url: urlValue,
       deadline,
+      userId,
       metadata: newMetadata
     })
   };
@@ -210,9 +214,10 @@ const ListPage = () => {
           </Stack>
         </Flex>
         {active === 0 ? 
-          ( list && list.length > 0 ? list?.map(({ id, deadline, metadata, url }) => {
+          ( list && list.length > 0 ? list?.map(({ id, deadline, metadata, url,userId }) => {
             return (
               <ListCard
+                userId={userId}
                 key={id}
                 id={id}
                 metadata={metadata}
@@ -253,8 +258,9 @@ const ListPage = () => {
             return jobDeadline === selectedDay;
           });
           return filteredJobs.length > 0 ? (
-            filteredJobs.map(({ id, deadline, metadata, url }) => (
+            filteredJobs.map(({ id, deadline, metadata, url,userId }) => (
               <ListCard
+                userId={id}
                 key={id}
                 id={id}
                 metadata={metadata}
