@@ -2,10 +2,11 @@ import { MutationOptions, useMutation } from "@tanstack/react-query";
 import { serverInstance } from "../common/server";
 import { JobPosting } from "@/app/list/page";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/lib/configs/auth/authOptions";
 
 const deleteJobLink = async (id: JobPosting["id"]) => {
 
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   const userId = session?.user?.email
   console.log("userId",userId)
   if(userId){

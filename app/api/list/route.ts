@@ -4,7 +4,7 @@ import { Schema, model, models } from "mongoose";
 import type { JobPosting } from "@/app/list/page";
 import { getServerSession } from "next-auth";
 import { getSession, useSession } from "next-auth/react";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "../lib/configs/auth/authOptions";
 
 const jobPostingSchema = new Schema<JobPosting>({
   id: { type: String, required: true },
@@ -23,7 +23,7 @@ const jobPostingSchema = new Schema<JobPosting>({
 const JobPosting = models.JobPosting || model("JobPosting", jobPostingSchema);
 
 export async function GET() {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   if(session?.user) return null;
   console.log("userId",session?.user?.email)
 
@@ -35,7 +35,7 @@ export async function GET() {
 
 // 새로운 jobPosting 추가
 export async function POST(request: Request) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   if(session?.user) return null;
   await connectMongo();
   const { id, url, deadline, metadata } = (await request.json()) as JobPosting;

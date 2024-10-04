@@ -3,10 +3,11 @@ import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { serverInstance, serverResponseHandler } from "../common/server";
 import { useSession } from "next-auth/react";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/lib/configs/auth/authOptions";
 
 const getJobOpeningList = async () =>
   {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     const userId = session?.user?.email
   console.log("userId",userId)
 
