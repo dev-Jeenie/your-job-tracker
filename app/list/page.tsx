@@ -179,9 +179,8 @@ const ListPage = () => {
   
 
   return (
-    <Container>
+    <Container size="md" pt="130px">
       <Stack mt="xl" gap="xl">
-        <Title ff="heading">Job Trackers</Title>
         <Stack gap="lg">
           <Box>
             <Text
@@ -245,7 +244,7 @@ const ListPage = () => {
               )
             }}
           />
-          <Box flex={1}>
+          <Stack gap="xs" flex={1}>
           {selectedDate && list && list.length > 0 ? (
         (() => {
           const filteredJobs = list.filter(job => {
@@ -279,7 +278,7 @@ const ListPage = () => {
           </Flex>
         </Paper>
       )}
-          </Box>
+          </Stack>
         </Flex>
       }
       </Stack>

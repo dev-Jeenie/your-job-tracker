@@ -36,9 +36,21 @@ export const ListCard = (
                     <Stack h="100%" w={200} flex={1} justify="space-between">
                         <Box>
                             <Text fw="bold">{metadata?.title}</Text>
-                            <Text>{metadata?.description}</Text>
+                            <Text style={{
+                                   textOverflow: "ellipsis",
+                                   overflow: "hidden",
+                                   wordBreak: "break-word",
+                                   whiteSpace: "nowrap"
+                            }}>{metadata?.description}</Text>
                         </Box>
-                        <Anchor href={url} target="_blank">{url}</Anchor>
+                        <Anchor href={url} target="_blank"
+                        style={{
+                            textOverflow: "ellipsis",
+                            overflow: "hidden",
+                            wordBreak: "break-word",
+                            whiteSpace: "nowrap"
+                        }}
+                        >{url}</Anchor>
                     </Stack>
                     <Image
                         key="image"
