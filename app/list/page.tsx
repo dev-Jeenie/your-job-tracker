@@ -179,9 +179,8 @@ const ListPage = () => {
   
 
   return (
-    <Container>
+    <Container size="md" pt="130px">
       <Stack mt="xl" gap="xl">
-        <Title ff="heading">Job Trackers</Title>
         <Stack gap="lg">
           <Box>
             <Text
