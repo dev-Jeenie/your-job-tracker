@@ -7,6 +7,7 @@ const deleteJobLink = async (id: JobPosting["id"]) => {
 
   const session = await getServerSession();
   const userId = session?.user?.email
+  console.log("userId",userId)
   if(userId){
   return serverInstance.delete(`list/${id}`);
   }

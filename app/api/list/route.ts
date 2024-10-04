@@ -23,8 +23,10 @@ const jobPostingSchema = new Schema<JobPosting>({
 const JobPosting = models.JobPosting || model("JobPosting", jobPostingSchema);
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
   if(session?.user) return null;
+  console.log("userId",session?.user?.email)
+
   await connectMongo();
   const userId = session?.user?.email
   const jobPostings = await JobPosting.find({userId});
@@ -33,7 +35,7 @@ export async function GET() {
 
 // 새로운 jobPosting 추가
 export async function POST(request: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
   if(session?.user) return null;
   await connectMongo();
   const { id, url, deadline, metadata } = (await request.json()) as JobPosting;

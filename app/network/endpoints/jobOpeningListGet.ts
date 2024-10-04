@@ -8,6 +8,7 @@ const getJobOpeningList = async () =>
   {
     const session = await getServerSession();
     const userId = session?.user?.email
+  console.log("userId",userId)
 
     if(userId) {
       return (

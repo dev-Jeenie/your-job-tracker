@@ -6,6 +6,7 @@ import { getServerSession } from "next-auth";
 const postNewJobLink = async (data: JobPosting) => {
   const session = await getServerSession();
   const userId = session?.user?.email
+  console.log("userId",userId)
 
   if(userId) {
       const list = JSON.parse(
