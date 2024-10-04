@@ -10,7 +10,7 @@ const jobPostingSchema = new Schema<JobPosting>({
   id: { type: String, required: true },
   url: { type: String, required: true },
   deadline: { type: Date,required: true },
-  userId: { type: String, required: true },
+  userEmail: { type: String, required: true },
   metadata: {
     title: { type: String },
     description: { type: String },

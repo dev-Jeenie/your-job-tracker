@@ -3,7 +3,7 @@ import { MutationOptions, useMutation } from "@tanstack/react-query";
 import { serverInstance, serverResponseHandler } from "../common/server";
 
 const postNewJobLink = async (data: JobPosting) => {
-  if(data.userId) {
+  if(data.userEmail) {
     return serverInstance
       .post(`/list`, data)
       .then(serverResponseHandler<JobPosting>)

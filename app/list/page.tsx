@@ -21,7 +21,7 @@ export interface JobPosting {
   id: string;
   url: string;
   deadline: Date;
-  userId?:string;
+  userEmail?:string;
   metadata?: MetaData;
   // metadata?: MetaData<OgTypeFromServer>;
 }
@@ -92,7 +92,7 @@ const ListPage = () => {
   const [controlsRefs, setControlsRefs] = useState<Record<string, HTMLButtonElement | null>>({});
   const [active, setActive] = useState(0);
   const { data: session } = useSession();
-  const userId = session?.user?.email;
+  const userEmail = session?.user?.email;
   const { data: list, refetch } = useGetJobsList();
   const { mutateAsync: postJobPosting } = useAddJobPosting({
     onSuccess() {
@@ -152,7 +152,7 @@ const ListPage = () => {
         id: crypto.randomUUID(),
         url: urlValue,
         deadline,
-        userId :userId as string ?? undefined,
+        userEmail :userEmail as string ?? undefined,
         metadata: newMetadata
       })
   };
@@ -215,10 +215,10 @@ const ListPage = () => {
           </Stack>
         </Flex>
         {active === 0 ? 
-          ( list && list.length > 0 ? list?.map(({ id, deadline, metadata, url,userId }) => {
+          ( list && list.length > 0 ? list?.map(({ id, deadline, metadata, url,userEmail }) => {
             return (
               <ListCard
-                userId={userId}
+                userEmail={userEmail}
                 key={id}
                 id={id}
                 metadata={metadata}
@@ -259,9 +259,9 @@ const ListPage = () => {
             return jobDeadline === selectedDay;
           });
           return filteredJobs.length > 0 ? (
-            filteredJobs.map(({ id, deadline, metadata, url,userId }) => (
+            filteredJobs.map(({ id, deadline, metadata, url,userEmail }) => (
               <ListCard
-                userId={id}
+                userEmail={id}
                 key={id}
                 id={id}
                 metadata={metadata}
