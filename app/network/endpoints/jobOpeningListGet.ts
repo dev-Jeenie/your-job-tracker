@@ -4,10 +4,10 @@ import { serverInstance, serverResponseHandler } from "../common/server";
 
 const getJobOpeningList = () =>
   {
-    const list = JSON.parse(
-      localStorage.getItem("JobPostings") ?? "[]"
-    );
-    return list;
+    // const list = JSON.parse(
+    //   localStorage.getItem("JobPostings") ?? "[]"
+    // );
+    // return list;
     return (
       serverInstance
     .get(`/list`)
