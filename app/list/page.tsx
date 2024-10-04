@@ -21,7 +21,7 @@ export interface JobPosting {
   id: string;
   url: string;
   deadline: Date;
-  userId:string;
+  userId?:string;
   metadata?: MetaData;
   // metadata?: MetaData<OgTypeFromServer>;
 }
@@ -137,8 +137,9 @@ const ListPage = () => {
     },
   });
 
+  console.log("list",list)
+
   const addLinkItem = async ({ deadline, urlValue }: { deadline: JobPosting["deadline"], urlValue: JobPosting["url"] }) => {
-    if(!userId) return;
     const metadata = await getMetadata({ url: urlValue })
     const newMetadata = {
       title: metadata?.title,
@@ -147,13 +148,13 @@ const ListPage = () => {
         image: metadata?.["og:image"]
       }
     }
-    postJobPosting({
-      id: crypto.randomUUID(),
-      url: urlValue,
-      deadline,
-      userId,
-      metadata: newMetadata
-    })
+      postJobPosting({
+        id: crypto.randomUUID(),
+        url: urlValue,
+        deadline,
+        userId :userId as string ?? undefined,
+        metadata: newMetadata
+      })
   };
 
   const deleteLinkItem = (targetId: string, url: string) => {

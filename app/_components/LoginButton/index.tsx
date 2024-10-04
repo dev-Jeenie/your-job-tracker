@@ -1,4 +1,3 @@
-'use server'
 
 import { Group, Text, UnstyledButton } from "@mantine/core"
 import { signIn } from "next-auth/react"
