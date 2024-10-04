@@ -92,7 +92,7 @@ const ListPage = () => {
   const [controlsRefs, setControlsRefs] = useState<Record<string, HTMLButtonElement | null>>({});
   const [active, setActive] = useState(0);
   const { data: session } = useSession();
-  const userEmail = session?.user?.email;
+  const userEmail = session?.user?.email || "";
   const { data: list, refetch } = useGetJobsList();
   const { mutateAsync: postJobPosting } = useAddJobPosting({
     onSuccess() {
@@ -160,7 +160,7 @@ const ListPage = () => {
 
   const deleteLinkItem = (targetId: string, url: string) => {
     if (confirm(`삭제하시겠습니까?`)) {
-      deleteLink(targetId)
+      deleteLink({id: targetId, userEmail:userEmail as string})
     }
   };
 

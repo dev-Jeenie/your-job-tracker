@@ -4,12 +4,8 @@ import { JobPosting } from "@/app/list/page";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/lib/configs/auth/authOptions";
 
-const deleteJobLink = async (id: JobPosting["id"]) => {
-
-  const session = await getServerSession(authOptions);
-  const userId = session?.user?.email
-  console.log("userId",userId)
-  if(userId){
+const deleteJobLink = async ({id, userEmail}: {id:JobPosting["id"], userEmail:JobPosting["userEmail"]}) => {
+  if(userEmail) {
   return serverInstance.delete(`list/${id}`);
   }
     // 로컬 스토리지에서 데이터를 가져옴
@@ -25,10 +21,10 @@ const deleteJobLink = async (id: JobPosting["id"]) => {
 };
 
 export const useDeleteJobLink = (
-  props?: MutationOptions<unknown, unknown, JobPosting["id"]>
+  props?: MutationOptions<unknown, unknown, {id:JobPosting["id"], userEmail:JobPosting["userEmail"]}>
 ) => {
   return useMutation({
-    mutationFn: (id: JobPosting["id"]) => deleteJobLink(id),
+    mutationFn: ({id, userEmail}: {id:JobPosting["id"], userEmail:JobPosting["userEmail"]}) => deleteJobLink({id,userEmail}),
     ...props,
   });
 };
