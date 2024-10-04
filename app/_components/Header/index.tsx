@@ -50,7 +50,7 @@ return (
             <Flex gap="sm">
                 {session ?
                     <Group gap="xs">
-                        <Image src={session?.user?.image || ""} width={100} alt="profile image" />
+                        <Image src={session?.user?.image || ""} width={50} style={{borderRadius:"50%"}} alt="profile image" />
                         <Text>{session?.user?.name}님, 환영해요.</Text>
                     </Group>
                     :
