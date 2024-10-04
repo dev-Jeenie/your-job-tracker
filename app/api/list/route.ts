@@ -37,14 +37,15 @@ export async function GET(request: Request) {
 
 // 새로운 jobPosting 추가
 export async function POST(request: Request) {
-  const { searchParams } = new URL(request.url);
-  console.log("searchParams",searchParams)
-  const userEmail = searchParams.get('email');
+  // const { searchParams } = new URL(request.url);
+  // console.log("searchParams",searchParams)
+  // const userEmail = searchParams.get('email');
+
 
   // const session = await getServerSession(authOptions);
   // if(session?.user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   await connectMongo();
-  const { id, url, deadline, metadata } = (await request.json()) as JobPosting;
+  const { id, url, deadline, metadata, userEmail } = await request.json(); // 본문에서 userEmail 가져오기
   
   const newJobPosting = new JobPosting({
     id,
