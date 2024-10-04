@@ -90,7 +90,7 @@ const ListPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
   const [controlsRefs, setControlsRefs] = useState<Record<string, HTMLButtonElement | null>>({});
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState(1);
   const { data: session } = useSession();
   const userEmail = session?.user?.email || "";
   const { data: list, refetch } = useGetJobsList();
