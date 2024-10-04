@@ -41,9 +41,7 @@ export default function RootLayout({
           <MantineProvider theme={theme}>
             <Notifications />
             <Header/>
-            <Container size="lg">
-              {children}
-            </Container>
+            {children}
           </MantineProvider>
         </QueryClientProvider>
         </AuthContext>
