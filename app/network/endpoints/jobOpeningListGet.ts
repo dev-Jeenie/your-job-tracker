@@ -1,19 +1,28 @@
 import { JobPosting } from "@/app/list/page";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { serverInstance, serverResponseHandler } from "../common/server";
+import { useSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/lib/configs/auth/authOptions";
 
-const getJobOpeningList = () =>
+const getJobOpeningList = async () =>
   {
-    // const list = JSON.parse(
-    //   localStorage.getItem("JobPostings") ?? "[]"
-    // );
-    // return list;
-    return (
-      serverInstance
-    .get(`/list`)
-    .then(serverResponseHandler<JobPosting[]>)
-    .then((res) => res)
-  )
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.email
+  console.log("userId",userId)
+
+    if(userId) {
+      return (
+        serverInstance
+      .get(`/list`)
+      .then(serverResponseHandler<JobPosting[]>)
+      .then((res) => res)
+    )
+    }
+    const list = JSON.parse(
+      localStorage.getItem("JobPostings") ?? "[]"
+    );
+    return list;
 };
 
 export const useGetJobsList = (
