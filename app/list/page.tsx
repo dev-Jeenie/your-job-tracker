@@ -148,11 +148,12 @@ const ListPage = () => {
         image: metadata?.["og:image"]
       }
     }
+    console.log("userEmail",userEmail)
       postJobPosting({
         id: crypto.randomUUID(),
         url: urlValue,
         deadline,
-        userEmail :userEmail as string ?? undefined,
+        userEmail:userEmail as string,
         metadata: newMetadata
       })
   };

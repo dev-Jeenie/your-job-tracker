@@ -4,6 +4,7 @@ import { serverInstance, serverResponseHandler } from "../common/server";
 
 const postNewJobLink = async (data: JobPosting) => {
   if(data.userEmail) {
+    console.log("data.userEmail",data.userEmail)
     return serverInstance
       .post(`/list`, data)
       .then(serverResponseHandler<JobPosting>)
