@@ -25,13 +25,13 @@ const JobPosting = models.JobPosting || model("JobPosting", jobPostingSchema);
 export async function GET(request: Request) {
   // const session = await getServerSession(authOptions);
   // if(session?.user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-  // console.log("userId",session?.user?.email)
+  // console.log("userEmail",session?.user?.email)
   const { searchParams } = new URL(request.url);
   console.log("searchParams",searchParams)
-  const userId = searchParams.get('email');
+  const userEmail = searchParams.get('email');
 
   await connectMongo();
-  const jobPostings = await JobPosting.find({userId});
+  const jobPostings = await JobPosting.find({userEmail});
   return NextResponse.json(jobPostings);
 }
 
@@ -39,7 +39,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   const { searchParams } = new URL(request.url);
   console.log("searchParams",searchParams)
-  const userId = searchParams.get('email');
+  const userEmail = searchParams.get('email');
 
   // const session = await getServerSession(authOptions);
   // if(session?.user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     id,
     url,
     deadline,
-    userId,
+    userEmail,
     metadata,
   });
   await newJobPosting.save();
