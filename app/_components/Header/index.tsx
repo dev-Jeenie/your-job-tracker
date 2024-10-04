@@ -1,6 +1,6 @@
 "use client"
 
-import { Container, Flex, Group, Portal, rem, Text, UnstyledButton } from "@mantine/core";
+import { Container, Flex, Group, Portal, rem, Text, Title, UnstyledButton } from "@mantine/core";
 import { useHeadroom } from "@mantine/hooks";
 import { IconMenu } from "@tabler/icons-react";
 import { useSession } from "next-auth/react";
@@ -32,12 +32,9 @@ return (
         top: 0,
         left: 0,
         right: 0,
-        padding: 'var(--mantine-spacing-xs)',
-        height: rem(60),
-        zIndex: 1000000,
         transform: `translate3d(0, ${pinned ? 0 : rem(-110)}, 0)`,
         transition: 'transform 400ms ease',
-        backgroundColor: 'var(--mantine-color-body)',
+        backgroundColor: "rgba(255, 255, 255)",
     }}
     >
     <Container>
@@ -57,7 +54,7 @@ return (
                         <Text>{session?.user?.name}님, 환영해요.</Text>
                     </Group>
                     :
-                    <LoginButton />
+                    <LoginButton color="gray" />
                 }
                 <UnstyledButton
                     size="m"
