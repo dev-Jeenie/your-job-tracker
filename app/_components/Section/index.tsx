@@ -13,7 +13,7 @@ export const Section = ({image, text, title}:{
             {title && 
                 <Text fw="lighter" size="xl">{title}</Text>
             }
-                {text.map((v) => <Text fw="lighter" size="xl">{v}</Text>)}
+                {text.map((v) => <Text key={v} fw="lighter" size="xl">{v}</Text>)}
             </Stack>
             <Image src={image} alt="image1" style={{flex:1, objectFit: "contain", height:"100%"}} />
         </Flex>
