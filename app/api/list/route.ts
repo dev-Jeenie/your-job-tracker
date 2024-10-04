@@ -24,7 +24,7 @@ const JobPosting = models.JobPosting || model("JobPosting", jobPostingSchema);
 
 export async function GET() {
   const session = await getServerSession(authOptions);
-  if(session?.user) return null;
+  if(session?.user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   console.log("userId",session?.user?.email)
 
   await connectMongo();
@@ -36,7 +36,7 @@ export async function GET() {
 // 새로운 jobPosting 추가
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
-  if(session?.user) return null;
+  if(session?.user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   await connectMongo();
   const { id, url, deadline, metadata } = (await request.json()) as JobPosting;
   const userId = session?.user?.email
